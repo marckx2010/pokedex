@@ -1,0 +1,44 @@
+const axios = require('axios');
+const {success} = require("concurrently/dist/src/defaults.js");
+const sqlite3 = require('sqlite3').verbose();
+
+// Replace with your SQLite database file path
+const dbPath = '/database/database.sqlite';
+
+window.addEventListener('seed-pokedex', (event) => {
+    // Connect to SQLite
+    const db = new sqlite3.Database(dbPath, (err) => {
+        if (err) throw err;
+        console.log('Connected to SQLite');
+
+        // Create the Pokémon table if it doesn't exist
+        db.run(`
+            CREATE TABLE IF NOT EXISTS pokemon
+            (
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                url TEXT
+            )
+        `);
+
+        // Fetch Pokémon data from the API
+        axios.get('https://pokeapi.co/api/v2/pokemon?limit=151')
+            .then(response => {
+                const pokemonData = response.data.results;
+
+                // Loop through each Pokémon and save it to the database
+                pokemonData.forEach(pokemon => {
+                    axios.get(pokemon.url)
+                        .then(response => {
+                            const pokemonDetails = response.data;
+                            db.run('INSERT INTO pokemon (id, name) VALUES (?, ?)', [pokemonDetails.id, pokemonDetails.name], (err) => {
+                                if (err) throw err;
+                                console.log(`${pokemonDetails.name} saved to database`);
+                            });
+                        })
+                        .catch(err => console.error(err));
+                });
+            })
+            .catch(err => console.error(err));
+    })
+});
