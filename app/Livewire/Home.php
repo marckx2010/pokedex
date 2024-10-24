@@ -25,7 +25,7 @@ class Home extends Component
         $poxedex = new Pokedex();
         $poxedex->seedPokedex();
         $this->redirect('/');
-        $this->dispatcch('pokedex-success');
+        $this->dispatch('pokedex-success');
     }
 
     public function render()
