@@ -15,6 +15,7 @@
         "ext-simplexml": "*",
         "ext-zip": "*",
         "ext-pdo": "*",
+        "ext-http": "*",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
