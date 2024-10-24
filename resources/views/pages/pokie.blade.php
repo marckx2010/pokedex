@@ -1,4 +1,1 @@
-@php
-$name = trim($name, '"');
-@endphp
-<livewire:get-pokeman-info :name="$name" />
+<livewire:get-pokeman-info :b64="$b64" />

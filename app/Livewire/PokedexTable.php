@@ -31,7 +31,7 @@ class PokedexTable extends DataTableComponent
         return [
             Column::make('Name')
                 ->format(
-                    fn($value, $row, Column $column) => '<a href=/overview/' . $row->name . '">'. $row->name . '</a>'
+                    fn($value, $row, Column $column) => '<a href="/overview/' . $row->name . '">'. $row->name . '</a>'
                 )
                 ->html()
                 ->searchable(),
