@@ -29,7 +29,7 @@
         }
 
         body {
-            margin: 100px 25% 75px 25%;
+            margin: 100px 15% 75px 15%;
         }
     </style>
 

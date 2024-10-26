@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Livewire\Utils\Dispatcher;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
@@ -32,7 +33,7 @@ class Pokedex extends Model
         return $onePokeman->count;
     }
 
-    public function getPokemonDBinfo(): object
+    public function getPokemonpokemonDBinfo(): array
     {
         $numPokemenInDB = self::query()->count();
 
@@ -47,7 +48,7 @@ class Pokedex extends Model
 
         $pokemonCountFromAPI = $this->getPokemonCountFromAPI();
 
-        return (object) [
+        return [
             'numPokemonInDB' => $numPokemenInDB,
             'lastWriteTimeFormatted' => $lastWriteTimeFormatted,
             'pokemonCountFromAPI' => $pokemonCountFromAPI
@@ -64,24 +65,8 @@ class Pokedex extends Model
             $response = $client->get("https://pokeapi.co/api/v2/pokemon/$name");
             if ($response->getStatusCode() === Response::HTTP_OK) {
                 $pokemonData = json_decode($response->getBody()->getContents(), true);
-                $payload = $pokemonData;
-                $pokemonId = $pokemonData["id"];
-                //dd($pokemonData);
 
                 return $pokemonData;
-            } else {
-                throw new Exception("Error: " . $response->getBody()->getContents());
-            }
-        } catch (Exception $e) {
-            throw new Exception("Error: " . $e->getMessage());
-        }
-
-        try {
-            $response = $client->get("https://pokeapi.co/api/v2/evolution-chain/$pokemonId");
-            if ($response->getStatusCode() === Response::HTTP_OK) {
-                $pokemonData = json_decode($response->getBody()->getContents(), true);
-                //payload[] = $pokemonData["species"];
-                //dd($pokemonData);
             } else {
                 throw new Exception("Error: " . $response->getBody()->getContents());
             }
@@ -100,14 +85,22 @@ class Pokedex extends Model
 
         // now get them all in chunks
         $allPokemen = file_get_contents(Pokedex::TABLE_ENDPOINT . "/?limit=$numPokemen");
-        $allPokemen = json_decode($allPokemen, true);
+        $allPokemen = json_decode($allPokemen, false);
 
         DB::table($this->table)->truncate();
 
-        foreach ($allPokemen['results'] as $pokemon) {
+        // no apparant way to insert chunks into table without the key getting in the way...so slow but sure way used
+        $chunkSize = 10; // usually much larger number yet here just for the slider
+        $index = 0;
+        $array = array();
+
+        foreach($allPokemen->results as $pokeman)
+        {
             $pokedex = new Pokedex();
-            $pokedex->name = $pokemon['name'];
+            $pokedex->name = $pokeman->name;
             $pokedex->save();
+
+            $index++;
         }
     }
 }

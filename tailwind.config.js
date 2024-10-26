@@ -35,8 +35,7 @@ module.exports = {
             fontFamily: {
                 'garamond': ["Garamond"],
                 'greatvibes': ["Great Vibes"],
-                'roboto': ["Roboto"],
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                'roboto': ["Roboto"]
             }
         },
     },

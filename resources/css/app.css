@@ -2,3 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+.pokemon-table {
+    margin-left: 250px;
+    color: darkslategray;
+    background-color: greenyellow;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.red-seeder-button {
+    background-color: red;
+}
+
+.green-seeder-button:hover {
+    background-color: darkred;
+}
+
+.yellow-seeder-button {
+    background-color: yellow;
+}
+
+.yellow-seeder-button:hover {
+    background-color: darkorange;
+}
+
+.green-seeder-button {
+    background-color: green;
+}
+
+.green-seeder-button:hover {
+    background-color: darkgreen;
+}
+
+

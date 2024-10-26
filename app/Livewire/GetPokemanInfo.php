@@ -11,6 +11,9 @@ class GetPokemanInfo extends Component
     public ?array $payload;
     public ?string $referer = null;
 
+    /**
+     * @throws \Exception
+     */
     public function mount(string $b64): void
     {
         // try to decode both the name and referer
@@ -24,13 +27,26 @@ class GetPokemanInfo extends Component
             $name = $b64;
         }
 
+        $check = <<<STYLE
+            <span style="color: green">&#x2714;</span> 
+         STYLE;
+
+        $X = <<<STYLE
+            <span style="color: red">&times;</span>
+        STYLE;
+
         $this->name = trim($name);
         $pokedex = new Pokedex();
         $this->payload = $pokedex->getPayload($name);
         $a = "";
         foreach ($this->payload['abilities'] as $ability) {
-            $a .= "ability: " . $ability['ability']['name'] . PHP_EOL . "Is hidden: " . $ability['is_hidden'] . PHP_EOL . "Slot: " . $ability['slot'] . PHP_EOL;
+            $name = "<div>Name: " . $ability['ability']['name'] . "</div>";
+            $checkOrX = ($ability['is_hidden']) ? $check : $X;
+            $hidden = "<div>Is hidden: $checkOrX</div>";
+            $slot = "<div>Slot: " . $ability['slot'] . "</div><br/><br/>";
+            $a .= "$name $hidden  $slot";
         }
+
         $this->payload['abilities'] = $a;
     }
 
