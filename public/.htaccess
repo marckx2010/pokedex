@@ -5,6 +5,21 @@
 
     RewriteEngine On
 
+    # Block access to specific files and directories
+    RewriteCond %{REQUEST_URI} (?i)(^/xmlrpc\.php\?rsd$|^/wp-login\.php$|^/phpinfo\.php$|^/phpinfo$|^/_profiler/phpinfo$) [OR]
+    RewriteCond %{REQUEST_URI} (?i)(^/\.git/|^/\.git/config$|^/\.aws/credentials$|^/\.env$|^/app/\.env$|^/api/\.env$) [OR]
+    RewriteCond %{REQUEST_URI} (?i)(^/blog/wp-includes/wlwmanifest\.xml$|^/web/wp-includes/wlwmanifest\.xml$|^/wordpress/wp-includes/wlwmanifest\.xml$|^/wp/wp-includes/wlwmanifest\.xml$|^/2019/wp-includes/wlwmanifest\.xml$|^/shop/wp-includes/wlwmanifest\.xml$|^/wp1/wp-includes/wlwmanifest\.xml$|^/test/wp-includes/wlwmanifest\.xml$|^/site/wp-includes/wlwmanifest\.xml$|^/cms/wp-includes/wlwmanifest\.xml$|^/wp-includes/wlwmanifest\.xml$|^/website/wp-includes/wlwmanifest\.xml$|^/news/wp-includes/wlwmanifest\.xml$|^/wp2/wp-includes/wlwmanifest\.xml$|^/sito/wp-includes/wlwmanifest\.xml$|^/2018/wp-includes/wlwmanifest\.xml$|^/media/wp-includes/wlwmanifest\.xml$) [OR]
+    RewriteCond %{REQUEST_URI} (?i)(^/wp-admin$|^/wp-admin/.*$)
+    RewriteRule .* - [F,L]
+
+    # Deny access to all dotfiles, except for .well-known directory
+    RewriteCond %{REQUEST_URI} (^/\.|^\.\w+) [NC]
+    RewriteCond %{REQUEST_URI} !^/\.well-known/
+    RewriteRule .* - [F,L]
+
+    # Disable directory browsing
+    Options -Indexes
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -19,3 +34,4 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
